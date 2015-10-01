@@ -11,7 +11,7 @@
 #import "DBCSession.h"
 #import "DBCRequest.h"
 
-@protocol DBRestClientDelegate;
+@protocol DBCRestClientDelegate;
 @class DBCAccountInfo;
 @class DBCMetadata;
 
@@ -25,7 +25,7 @@
     NSMutableDictionary* loadRequests;
     NSMutableDictionary* imageLoadRequests;
     NSMutableDictionary* uploadRequests;
-    id<DBRestClientDelegate> delegate;
+    id<DBCRestClientDelegate> delegate;
 }
 
 - (id)initWithSession:(DBCSession*)session;
@@ -116,7 +116,7 @@
 
 - (NSUInteger)requestCount;
 
-@property (nonatomic, assign) id<DBRestClientDelegate> delegate;
+@property (nonatomic, assign) id<DBCRestClientDelegate> delegate;
 
 @end
 
@@ -126,7 +126,7 @@
 /* The delegate provides allows the user to get the result of the calls made on the DBRestClient.
    Right now, the error parameter of failed calls may be nil and [error localizedDescription] does
    not contain an error message appropriate to show to the user. */
-@protocol DBRestClientDelegate <NSObject>
+@protocol DBCRestClientDelegate <NSObject>
 
 @optional
 
