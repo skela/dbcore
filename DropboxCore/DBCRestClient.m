@@ -137,6 +137,21 @@
 
 #pragma mark - Request Generation
 
+- (DBCRequest*)createLoadMetadataRequest:(NSString*)path
+{
+    return [self createLoadMetadataRequest:path withParams:nil];
+}
+
+- (DBCRequest*)createLoadMetadataRequest:(NSString*)path withHash:(NSString*)hash
+{
+    return [self createLoadMetadataRequest:path withParams:hash?@{@"hash":hash}:nil];
+}
+
+- (DBCRequest*)createLoadMetadataRequest:(NSString*)path atRev:(NSString*)rev
+{
+    return [self createLoadMetadataRequest:path withParams:rev?@{@"rev":rev}:nil];
+}
+
 - (DBCRequest*)createLoadMetadataRequest:(NSString*)path withParams:(NSDictionary *)params
 {
     NSString* fullPath = [NSString stringWithFormat:@"/metadata/%@%@", root, path];
@@ -155,6 +170,11 @@
     request.userInfo = userInfo;
     
     return request;
+}
+
+- (DBCRequest*)createLoadFileRequest:(NSString*)path intoPath:(NSString*)destPath
+{
+    return [self createLoadFileRequest:path atRev:nil intoPath:destPath];
 }
 
 - (DBCRequest*)createLoadFileRequest:(NSString*)path atRev:(NSString*)rev intoPath:(NSString*)destPath

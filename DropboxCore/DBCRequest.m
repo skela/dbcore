@@ -97,7 +97,7 @@ id<DBNetworkRequestDelegate> dbNetworkRequestDelegate = nil;
 
 - (NSString *)resultString
 {
-    return [[[NSString alloc] 
+    return [[[NSString alloc]
              initWithData:resultData encoding:NSUTF8StringEncoding]
             autorelease];
 }

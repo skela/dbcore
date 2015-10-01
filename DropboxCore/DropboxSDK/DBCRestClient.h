@@ -118,6 +118,14 @@
 
 @property (nonatomic, assign) id<DBCRestClientDelegate> delegate;
 
+/* Creates dropbox requests that do not start immediately */
+- (DBCRequest*)createLoadMetadataRequest:(NSString*)path;
+- (DBCRequest*)createLoadMetadataRequest:(NSString*)path withHash:(NSString*)hash;
+- (DBCRequest*)createLoadMetadataRequest:(NSString*)path atRev:(NSString*)rev;
+- (DBCRequest*)createLoadMetadataRequest:(NSString*)path withParams:(NSDictionary *)params;
+- (DBCRequest*)createLoadFileRequest:(NSString*)path intoPath:(NSString*)destPath;
+- (DBCRequest*)createLoadFileRequest:(NSString*)path atRev:(NSString*)rev intoPath:(NSString*)destPath;
+
 @end
 
 

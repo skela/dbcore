@@ -113,8 +113,10 @@
 
 #pragma mark NSCoding methods
 
-- (id)initWithCoder:(NSCoder*)coder {
-    if ((self = [super init])) {
+- (id)initWithCoder:(NSCoder*)coder
+{
+    if ((self = [super init]))
+    {
         thumbnailExists = [coder decodeBoolForKey:@"thumbnailExists"];
         totalBytes = [coder decodeInt64ForKey:@"totalBytes"];
         lastModifiedDate = [[coder decodeObjectForKey:@"lastModifiedDate"] retain];
