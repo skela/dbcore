@@ -155,18 +155,14 @@
 - (DBCRequest*)createLoadMetadataRequest:(NSString*)path withParams:(NSDictionary *)params
 {
     NSString* fullPath = [NSString stringWithFormat:@"/metadata/%@%@", root, path];
-    NSURLRequest* urlRequest =
-    [self requestWithHost:kDBCDropboxAPIHost path:fullPath parameters:params];
+    NSMutableURLRequest* urlRequest = [self requestWithHost:kDBCDropboxAPIHost path:fullPath parameters:params];
     
-    DBCRequest* request =
-    [[[DBCRequest alloc]
-      initWithURLRequest:urlRequest andInformTarget:self selector:@selector(requestDidLoadMetadata:) startImmediately:NO]
-     autorelease];
+    DBCRequest* request = [[[DBCRequest alloc] initWithURLRequest:urlRequest andInformTarget:self selector:@selector(requestDidLoadMetadata:) startImmediately:NO] autorelease];
     
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:path forKey:@"path"];
-    if (params) {
+    if (params)
         [userInfo addEntriesFromDictionary:params];
-    }
+    
     request.userInfo = userInfo;
     
     return request;
@@ -182,22 +178,16 @@
     NSString* fullPath = [NSString stringWithFormat:@"/files/%@%@", root, path];
     
     NSDictionary *params = nil;
-    if (rev) {
+    if (rev)
         params = [NSDictionary dictionaryWithObject:rev forKey:@"rev"];
-    }
     
-    NSURLRequest* urlRequest =
-    [self requestWithHost:kDBCDropboxAPIContentHost path:fullPath parameters:params];
-    DBCRequest* request =
-    [[[DBCRequest alloc]
-      initWithURLRequest:urlRequest andInformTarget:self selector:@selector(requestDidLoadFile:) startImmediately:NO]
-     autorelease];
+    NSMutableURLRequest* urlRequest = [self requestWithHost:kDBCDropboxAPIContentHost path:fullPath parameters:params];
+    //urlRequest.timeoutInterval = 60;
+    DBCRequest* request = [[[DBCRequest alloc] initWithURLRequest:urlRequest andInformTarget:self selector:@selector(requestDidLoadFile:) startImmediately:NO] autorelease];
     request.resultFilename = destPath;
     request.downloadProgressSelector = @selector(requestLoadProgress:);
-    request.userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-                        path, @"path",
-                        destPath, @"destinationPath",
-                        rev, @"rev", nil];
+    request.userInfo = @{@"path":path,@"destinationPath":destPath,@"rev":rev};
+    
     return request;
 }
 
@@ -1368,53 +1358,48 @@
     return userAgent;
 }
 
-- (NSMutableURLRequest*)requestWithHost:(NSString*)host path:(NSString*)path 
-    parameters:(NSDictionary*)params {
-    
+- (NSMutableURLRequest*)requestWithHost:(NSString*)host path:(NSString*)path parameters:(NSDictionary*)params
+{
     return [self requestWithHost:host path:path parameters:params method:nil];
 }
 
-
-- (NSMutableURLRequest*)requestWithHost:(NSString*)host path:(NSString*)path 
-    parameters:(NSDictionary*)params method:(NSString*)method {
-    
+- (NSMutableURLRequest*)requestWithHost:(NSString*)host path:(NSString*)path parameters:(NSDictionary*)params method:(NSString*)method
+{
     NSString* escapedPath = [DBCRestClient escapePath:path];
-    NSString* urlString = [NSString stringWithFormat:@"%@://%@/%@%@", 
-                                        kDBCProtocolHTTPS, host, kDBCDropboxAPIVersion, escapedPath];
+    NSString* urlString = [NSString stringWithFormat:@"%@://%@/%@%@", kDBCProtocolHTTPS, host, kDBCDropboxAPIVersion, escapedPath];
     NSURL* url = [NSURL URLWithString:urlString];
 
-    NSMutableDictionary *allParams = 
-        [NSMutableDictionary dictionaryWithObject:[DBCRestClient bestLanguage] forKey:@"locale"];
-    if (params) {
+    NSMutableDictionary *allParams = [NSMutableDictionary dictionaryWithObject:[DBCRestClient bestLanguage] forKey:@"locale"];
+    if (params)
+    {
         [allParams addEntriesFromDictionary:params];
     }
 
     NSArray *extraParams = [MPURLRequestParameter parametersFromDictionary:allParams];
-    NSArray *paramList = 
-    [[self.credentialStore oauthParameters] arrayByAddingObjectsFromArray:extraParams];
+    NSArray *paramList = [[self.credentialStore oauthParameters] arrayByAddingObjectsFromArray:extraParams];
 
-    MPOAuthURLRequest* oauthRequest = 
-        [[[MPOAuthURLRequest alloc] initWithURL:url andParameters:paramList] autorelease];
-    if (method) {
+    MPOAuthURLRequest* oauthRequest = [[[MPOAuthURLRequest alloc] initWithURL:url andParameters:paramList] autorelease];
+    if (method)
+    {
         oauthRequest.HTTPMethod = method;
     }
 
-    NSMutableURLRequest* urlRequest = [oauthRequest 
-            urlRequestSignedWithSecret:self.credentialStore.signingKey 
-            usingMethod:self.credentialStore.signatureMethod];
+    NSMutableURLRequest* urlRequest = [oauthRequest urlRequestSignedWithSecret:self.credentialStore.signingKey usingMethod:self.credentialStore.signatureMethod];
     [urlRequest setTimeoutInterval:20];
     [urlRequest setValue:[DBCRestClient userAgent] forHTTPHeaderField:@"User-Agent"];
     return urlRequest;
 }
 
-
-- (void)checkForAuthenticationFailure:(DBCRequest*)request {
-    if (request.error && request.error.code == 401 && [request.error.domain isEqual:DBCErrorDomain]) {
+- (void)checkForAuthenticationFailure:(DBCRequest*)request
+{
+    if (request.error && request.error.code == 401 && [request.error.domain isEqual:DBCErrorDomain])
+    {
         [session.delegate sessionDidReceiveAuthorizationFailure:session userId:userId];
     }
 }
 
-- (MPOAuthCredentialConcreteStore *)credentialStore {
+- (MPOAuthCredentialConcreteStore *)credentialStore
+{
     return [session credentialStoreForUserId:userId];
 }
 
