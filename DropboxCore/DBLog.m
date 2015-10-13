@@ -8,21 +8,21 @@
 
 #import "DBLog.h"
 
-static DBLogLevel LogLevel = DBLogLevelWarning;
-static DBLogCallback *callback = NULL;
+static DBCLogLevel LogLevel = DBCLogLevelWarning;
+static DBCLogCallback *callback = NULL;
 
-NSString* DBStringFromLogLevel(DBLogLevel logLevel) {
+NSString* DBCStringFromLogLevel(DBCLogLevel logLevel) {
 	switch (logLevel) {
-		case DBLogLevelInfo: return @"INFO";
-		case DBLogLevelAnalytics: return @"ANALYTICS";
-		case DBLogLevelWarning: return @"WARNING";
-		case DBLogLevelError: return @"ERROR";
-		case DBLogLevelFatal: return @"FATAL";
+		case DBCLogLevelInfo: return @"INFO";
+		case DBCLogLevelAnalytics: return @"ANALYTICS";
+		case DBCLogLevelWarning: return @"WARNING";
+		case DBCLogLevelError: return @"ERROR";
+		case DBCLogLevelFatal: return @"FATAL";
 	}
 	return @"";	
 }
 
-NSString * DBLogFilePath()
+NSString * DBCLogFilePath()
 {
 	static NSString *logFilePath;
 	if (logFilePath == nil)
@@ -30,65 +30,65 @@ NSString * DBLogFilePath()
 	return logFilePath;
 }
 
-void DBSetupLogToFile()
+void DBCSetupLogToFile()
 {
-	freopen([DBLogFilePath() fileSystemRepresentation], "w", stderr);
+	freopen([DBCLogFilePath() fileSystemRepresentation], "w", stderr);
 }
 
-static NSString * DBLogFormatPrefix(DBLogLevel logLevel) {
-	return [NSString stringWithFormat: @"[%@] ", DBStringFromLogLevel(logLevel)];
+static NSString * DBCLogFormatPrefix(DBCLogLevel logLevel) {
+	return [NSString stringWithFormat: @"[%@] ", DBCStringFromLogLevel(logLevel)];
 }
 
-void DBLogSetLevel(DBLogLevel logLevel) {
+void DBCLogSetLevel(DBCLogLevel logLevel) {
 	LogLevel = logLevel;
 }
 
-void DBLogSetCallback(DBLogCallback *aCallback) {
+void DBCLogSetCallback(DBCLogCallback *aCallback) {
 	callback = aCallback;
 }
 
-static void DBLogv(DBLogLevel logLevel, NSString *format, va_list args) {
+static void DBLogv(DBCLogLevel logLevel, NSString *format, va_list args) {
 	if (logLevel >= LogLevel)
 	{
-		format = [DBLogFormatPrefix(logLevel) stringByAppendingString: format];
+		format = [DBCLogFormatPrefix(logLevel) stringByAppendingString: format];
 		NSLogv(format, args);
 		if (callback)
 			callback(logLevel, format, args);
 	}
 }
 
-void DBLog(DBLogLevel logLevel, NSString *format, ...) {
+void DBCLog(DBCLogLevel logLevel, NSString *format, ...) {
 	va_list argptr;
 	va_start(argptr,format);
 	DBLogv(logLevel, format, argptr);
 	va_end(argptr);
 }
 
-void DBLogInfo(NSString *format, ...) {
+void DBCLogInfo(NSString *format, ...) {
 	va_list argptr;
 	va_start(argptr,format);
-	DBLogv(DBLogLevelInfo, format, argptr);
+	DBLogv(DBCLogLevelInfo, format, argptr);
 	va_end(argptr);
 }
 
-void DBLogWarning(NSString *format, ...) {
+void DBCLogWarning(NSString *format, ...) {
 	va_list argptr;
 	va_start(argptr,format);
-	DBLogv(DBLogLevelWarning, format, argptr);
+	DBLogv(DBCLogLevelWarning, format, argptr);
 	va_end(argptr);
 }
 
-void DBLogError(NSString *format, ...) {
+void DBCLogError(NSString *format, ...) {
 	va_list argptr;
 	va_start(argptr,format);
-	DBLogv(DBLogLevelError, format, argptr);
+	DBLogv(DBCLogLevelError, format, argptr);
 	va_end(argptr);
 }
 
-void DBLogFatal(NSString *format, ...) {
+void DBCLogFatal(NSString *format, ...) {
 	va_list argptr;
 	va_start(argptr,format);
-	DBLogv(DBLogLevelFatal, format, argptr);
+	DBLogv(DBCLogLevelFatal, format, argptr);
 	va_end(argptr);
 }
 

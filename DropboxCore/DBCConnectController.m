@@ -183,7 +183,7 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
     if (error.code == 102 && [error.domain isEqual:@"WebKitErrorDomain"]) return;
     if (error.code == NSURLErrorCancelled && [error.domain isEqual:NSURLErrorDomain]) return;
 
-    DBLogWarning(@"DropboxSDK: error loading DBConnectController - %@", error);
+    DBCLogWarning(@"DropboxSDK: error loading DBConnectController - %@", error);
 
     NSString *title = @"";
     NSString *message = @"";
@@ -229,14 +229,14 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
 
         BOOL success = [self openUrl:[request URL]];
 		if (success && ![self.session isLinked]) {
-			DBLogError(@"DropboxSDK: credentials not saved. Make sure you call -[DBSession handleOpenUrl:] in your app delegate's application:openURL:sourceApplication:annotation: method");
+			DBCLogError(@"DropboxSDK: credentials not saved. Make sure you call -[DBSession handleOpenUrl:] in your app delegate's application:openURL:sourceApplication:annotation: method");
 		}
 
         [self dismiss];
         return NO;
     } else if ([[[request URL] scheme] isEqual:@"itms-apps"]) {
 #if TARGET_IPHONE_SIMULATOR
-        DBLogError(@"DropboxSDK - Can't open on simulator. Run on an iOS device to test this functionality");
+        DBCLogError(@"DropboxSDK - Can't open on simulator. Run on an iOS device to test this functionality");
 #else
         [[UIApplication sharedApplication] openURL:[request URL]];
         [self cancelAnimated:NO];
@@ -302,7 +302,7 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
     } else if ([delegate respondsToSelector:@selector(application:handleOpenURL:)]) {
         [delegate application:app handleOpenURL:openUrl];
     } else {
-		DBLogError(@"DropboxSDK: app delegate does not implement application:openURL:sourceApplication:annotation:");
+		DBCLogError(@"DropboxSDK: app delegate does not implement application:openURL:sourceApplication:annotation:");
 		return NO;
 	}
 

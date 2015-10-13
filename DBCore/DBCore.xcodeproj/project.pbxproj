@@ -94,6 +94,7 @@
 		C61B1CD41BB90D3000ADA66E /* DBCDeltaEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = C61B1C751BB90D3000ADA66E /* DBCDeltaEntry.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		C61B1CD51BB90D3000ADA66E /* DBCConnectController.m in Sources */ = {isa = PBXBuildFile; fileRef = C61B1C761BB90D3000ADA66E /* DBCConnectController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		C61B1CD61BB90D3000ADA66E /* DBCAccountInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = C61B1C771BB90D3000ADA66E /* DBCAccountInfo.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		C6C905AE1BCCC81700C6244F /* MPOAuthAPIInternalClient.h in Headers */ = {isa = PBXBuildFile; fileRef = C6C905AD1BCCC81700C6244F /* MPOAuthAPIInternalClient.h */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -197,6 +198,7 @@
 		C61B1C751BB90D3000ADA66E /* DBCDeltaEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DBCDeltaEntry.m; path = ../DropboxCore/DBCDeltaEntry.m; sourceTree = "<group>"; };
 		C61B1C761BB90D3000ADA66E /* DBCConnectController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DBCConnectController.m; path = ../DropboxCore/DBCConnectController.m; sourceTree = "<group>"; };
 		C61B1C771BB90D3000ADA66E /* DBCAccountInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DBCAccountInfo.m; path = ../DropboxCore/DBCAccountInfo.m; sourceTree = "<group>"; };
+		C6C905AD1BCCC81700C6244F /* MPOAuthAPIInternalClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MPOAuthAPIInternalClient.h; path = ../DropboxCore/DropboxSDK/MPOAuthAPIInternalClient.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -254,6 +256,7 @@
 				C61B1C4B1BB90D3000ADA66E /* DBJsonParser.h */,
 				C61B1C4C1BB90D3000ADA66E /* DBJsonWriter.h */,
 				C61B1C4D1BB90D3000ADA66E /* DBLog.h */,
+				C6C905AD1BCCC81700C6244F /* MPOAuthAPIInternalClient.h */,
 				C61B1C501BB90D3000ADA66E /* DropboxSDK.h */,
 				C61B1C511BB90D3000ADA66E /* JSON.h */,
 				C61B1C521BB90D3000ADA66E /* MPDebug.h */,
@@ -371,6 +374,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6C905AE1BCCC81700C6244F /* MPOAuthAPIInternalClient.h in Headers */,
 				C61B1CA41BB90D3000ADA66E /* DBCRequest.h in Headers */,
 				C61B1CA21BB90D3000ADA66E /* DBCMetadata.h in Headers */,
 				C61B1CA51BB90D3000ADA66E /* DBCRestClient.h in Headers */,

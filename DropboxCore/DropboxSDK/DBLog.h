@@ -13,26 +13,26 @@
 #endif
 
 typedef enum {
-	DBLogLevelInfo = 0,
-	DBLogLevelAnalytics,
-	DBLogLevelWarning,
-	DBLogLevelError,
-	DBLogLevelFatal
-} DBLogLevel;
+	DBCLogLevelInfo = 0,
+	DBCLogLevelAnalytics,
+	DBCLogLevelWarning,
+	DBCLogLevelError,
+	DBCLogLevelFatal
+} DBCLogLevel;
 
-typedef void DBLogCallback(DBLogLevel logLevel, NSString *format, va_list args);
+typedef void DBCLogCallback(DBCLogLevel logLevel, NSString *format, va_list args);
 
 NSString * DBLogFilePath(void);
 void DBSetupLogToFile(void);
 
-NSString* DBStringFromLogLevel(DBLogLevel logLevel);
+NSString* DBStringFromLogLevel(DBCLogLevel logLevel);
 
 
-void DBLogSetLevel(DBLogLevel logLevel);
-void DBLogSetCallback(DBLogCallback *callback);
+void DBCLogSetLevel(DBCLogLevel logLevel);
+void DBCLogSetCallback(DBCLogCallback *callback);
 
-void DBLog(DBLogLevel logLevel, NSString *format, ...) NS_FORMAT_FUNCTION(2,3);
-void DBLogInfo(NSString *format, ...) NS_FORMAT_FUNCTION(1,2);
-void DBLogWarning(NSString *format, ...) NS_FORMAT_FUNCTION(1,2);
-void DBLogError(NSString *format, ...) NS_FORMAT_FUNCTION(1,2);
-void DBLogFatal(NSString *format, ...) NS_FORMAT_FUNCTION(1,2);
+void DBCLog(DBCLogLevel logLevel, NSString *format, ...) NS_FORMAT_FUNCTION(2,3);
+void DBCLogInfo(NSString *format, ...) NS_FORMAT_FUNCTION(1,2);
+void DBCLogWarning(NSString *format, ...) NS_FORMAT_FUNCTION(1,2);
+void DBCLogError(NSString *format, ...) NS_FORMAT_FUNCTION(1,2);
+void DBCLogFatal(NSString *format, ...) NS_FORMAT_FUNCTION(1,2);

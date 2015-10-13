@@ -62,7 +62,7 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
 
 - (void)linkUserId:(NSString *)userId fromController:(UIViewController *)rootController {
     if (![self appConformsToScheme]) {
-        DBLogError(@"DropboxSDK: unable to link; app isn't registered for correct URL scheme (%@)", [self appScheme]);
+        DBCLogError(@"DropboxSDK: unable to link; app isn't registered for correct URL scheme (%@)", [self appScheme]);
         return;
     }
 
@@ -135,13 +135,13 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey:kDBLinkNonce];
 		[[NSUserDefaults standardUserDefaults] synchronize];
 		if (![nonce isEqual:state]) {
-			DBLogError(@"unable to verify link request");
+			DBCLogError(@"unable to verify link request");
 			return NO;
 		}
 
         [self updateAccessToken:token accessTokenSecret:secret forUserId:userId];
     } else if ([methodName isEqual:@"cancel"]) {
-        DBLogInfo(@"DropboxSDK: user cancelled Dropbox link");
+        DBCLogInfo(@"DropboxSDK: user cancelled Dropbox link");
     }
 
     return YES;

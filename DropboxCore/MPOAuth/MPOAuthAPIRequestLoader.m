@@ -15,6 +15,7 @@
 #import "MPURLRequestParameter.h"
 #import "NSURLResponse+Encoding.h"
 #import "MPDebug.h"
+#import "MPOAuthAPIInternalClient.h"
 
 NSString * const MPOAuthNotificationRequestTokenReceived	= @"MPOAuthNotificationRequestTokenReceived";
 NSString * const MPOAuthNotificationRequestTokenRejected	= @"MPOAuthNotificationRequestTokenRejected";
@@ -36,8 +37,6 @@ NSString * const MPOAuthNotificationErrorHasOccurred		= @"MPOAuthNotificationErr
 
 - (void)_interrogateResponseForOAuthData;
 @end
-
-@protocol MPOAuthAPIInternalClient;
 
 @implementation MPOAuthAPIRequestLoader
 

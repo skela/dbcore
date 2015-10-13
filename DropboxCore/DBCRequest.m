@@ -138,7 +138,7 @@ id<DBNetworkRequestDelegate> dbNetworkRequestDelegate = nil;
         [fileHandle closeFile];
         NSError *rmError;
         if (![fileManager removeItemAtPath:tempFilename error:&rmError]) {
-            DBLogError(@"DBRequest#cancel Error removing temp file: %@", rmError);
+            DBCLogError(@"DBRequest#cancel Error removing temp file: %@", rmError);
         }
     }
     
@@ -172,7 +172,7 @@ id<DBNetworkRequestDelegate> dbNetworkRequestDelegate = nil;
         
         BOOL success = [fileManager createFileAtPath:tempFilename contents:nil attributes:nil];
         if (!success) {
-            DBLogError(@"DBRequest#connection:didReceiveData: Error creating temp file: (%d) %s",
+            DBCLogError(@"DBRequest#connection:didReceiveData: Error creating temp file: (%d) %s",
                        errno, strerror(errno));
         }
 
@@ -247,7 +247,7 @@ id<DBNetworkRequestDelegate> dbNetworkRequestDelegate = nil;
         NSDictionary *fileAttrs = [fileManager attributesOfItemAtPath:tempFilename error:&moveError];
         
         if (!fileAttrs) {
-            DBLogError(@"DBRequest#connectionDidFinishLoading: error getting file attrs: %@", moveError);
+            DBCLogError(@"DBRequest#connectionDidFinishLoading: error getting file attrs: %@", moveError);
             [fileManager removeItemAtPath:tempFilename error:nil];
             [self setError:[NSError errorWithDomain:moveError.domain code:moveError.code userInfo:self.userInfo]];
         } else if ([self responseBodySize] != 0 && [self responseBodySize] != [fileAttrs fileSize]) {
@@ -260,7 +260,7 @@ id<DBNetworkRequestDelegate> dbNetworkRequestDelegate = nil;
             
             BOOL success = [fileManager moveItemAtPath:tempFilename toPath:resultFilename error:&moveError];
             if (!success) {
-                DBLogError(@"DBRequest#connectionDidFinishLoading: error moving temp file to desired location: %@",
+                DBCLogError(@"DBRequest#connectionDidFinishLoading: error moving temp file to desired location: %@",
                     [moveError localizedDescription]);
                 [self setError:[NSError errorWithDomain:moveError.domain code:moveError.code userInfo:self.userInfo]];
             }
@@ -287,7 +287,7 @@ id<DBNetworkRequestDelegate> dbNetworkRequestDelegate = nil;
         NSError *removeError;
         BOOL success = [fileManager removeItemAtPath:tempFilename error:&removeError];
         if (!success) {
-            DBLogError(@"DBRequest#connection:didFailWithError: error removing temporary file: %@", 
+            DBCLogError(@"DBRequest#connection:didFailWithError: error removing temporary file: %@",
                     [removeError localizedDescription]);
         }
         [tempFilename release];
@@ -316,7 +316,7 @@ id<DBNetworkRequestDelegate> dbNetworkRequestDelegate = nil;
 
 - (NSInputStream *)connection:(NSURLConnection *)connection needNewBodyStream:(NSURLRequest *)req {
     if (!sourcePath) {
-        DBLogWarning(@"DropboxSDK: need new body stream, but none available");
+        DBCLogWarning(@"DropboxSDK: need new body stream, but none available");
         return nil;
     }
     return [NSInputStream inputStreamWithFileAtPath:sourcePath];
@@ -337,7 +337,7 @@ id<DBNetworkRequestDelegate> dbNetworkRequestDelegate = nil;
 
     if (!([error.domain isEqual:DBCErrorDomain] && error.code == 304)) {
         // Log errors unless they're 304's
-        DBLogWarning(@"DropboxSDK: error making request to %@ - (%ld) %@",
+        DBCLogWarning(@"DropboxSDK: error making request to %@ - (%ld) %@",
                        [[request URL] path], (long)error.code, errorStr);
     }
 }
@@ -368,7 +368,7 @@ id<DBNetworkRequestDelegate> dbNetworkRequestDelegate = nil;
             // Note: certificate is a reference into an existing object, and doesn't need a CFRelease.
             SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, 0);
             if ([DBCRequest isRevokedCertificate: certificate]){
-                DBLogError(@"DropboxSDK: SSL Error. Revoked certificate for the host: %@", host);
+                DBCLogError(@"DropboxSDK: SSL Error. Revoked certificate for the host: %@", host);
                 [[challenge sender] cancelAuthenticationChallenge: challenge];
             } else {
                 // Continue the connection
@@ -378,7 +378,7 @@ id<DBNetworkRequestDelegate> dbNetworkRequestDelegate = nil;
             }
         } else {
             // Certificate validation failed. Terminate the connection
-            DBLogError(@"DropboxSDK: SSL Error. Cannot validate a certificate for the host: %@", host);
+            DBCLogError(@"DropboxSDK: SSL Error. Cannot validate a certificate for the host: %@", host);
             [[challenge sender] cancelAuthenticationChallenge: challenge];
         }
     } else if ([challenge.protectionSpace.authenticationMethod isEqualToString:DBURLAuthenticationMethodOAuth]
@@ -392,7 +392,7 @@ id<DBNetworkRequestDelegate> dbNetworkRequestDelegate = nil;
         // Disallowed authentication method. Terminate the connection.  Assuming an
         // SSL failure is the safest option here, rather than trying to continue past
         // the error as we do for OAuth.
-        DBLogError(@"DropboxSDK: SSL Error. Unknown authentication method %@ for Dropbox host: %@",
+        DBCLogError(@"DropboxSDK: SSL Error. Unknown authentication method %@ for Dropbox host: %@",
                    challenge.protectionSpace.authenticationMethod, host);
         [[challenge sender] cancelAuthenticationChallenge: challenge];
     }
@@ -423,13 +423,13 @@ static const size_t kMaxCertSNLen = 1000;
 + (int)readLength:(uint32_t *)length fromBuffer:(const uint8_t *)buf ofLength:(const uint32_t)bufLen atIndex:(uint32_t *)idx {
 
     if (*idx >= bufLen) {
-        DBLogWarning(@"readLength: idx:%d >= buflen:%d", *idx, bufLen);
+        DBCLogWarning(@"readLength: idx:%d >= buflen:%d", *idx, bufLen);
         return -2;
     }
 
     if (buf[*idx] == 0x80) {
         //this is unlimited encoding and this can't happen
-        DBLogWarning(@"readLength: Invalid DER (unlimited length encoding)");
+        DBCLogWarning(@"readLength: Invalid DER (unlimited length encoding)");
         return -1;
     }
 
@@ -450,12 +450,12 @@ static const size_t kMaxCertSNLen = 1000;
     uint8_t len_of_len = (uint8_t) (buf[*idx] & 0x7f);
     if (len_of_len > 4) {
         //This is crazy -- more than 4bytes means that this is more than 4GB
-        DBLogWarning(@"readLength: length of any TLV can't be more than 32bit");
+        DBCLogWarning(@"readLength: length of any TLV can't be more than 32bit");
         return -1;
     }
 
     if (*idx + len_of_len >= bufLen) {
-        DBLogWarning(@"readLength: idx:%d + len_of_len: %d >= bufLen:%d", *idx, len_of_len, bufLen);
+        DBCLogWarning(@"readLength: idx:%d + len_of_len: %d >= bufLen:%d", *idx, len_of_len, bufLen);
         return -2;
     }
 
@@ -512,7 +512,7 @@ static const size_t kMaxCertSNLen = 1000;
     static const uint8_t TAG_INT = 0x02;
 
     if (certlen < 0 || certlen > (CFIndex) INT32_MAX) {
-        DBLogWarning(@"Certlen negative or too high: %ld. Paranoidly failing.", certlen);
+        DBCLogWarning(@"Certlen negative or too high: %ld. Paranoidly failing.", certlen);
         return NULL;
     }
 
@@ -521,12 +521,12 @@ static const size_t kMaxCertSNLen = 1000;
 
     //first byte has to be for sequence
     if (idx >= derlen) {
-        DBLogWarning(@"Error trying to read first TAG_SEQ. idx:%d >= certlen:%ld", idx, certlen);
+        DBCLogWarning(@"Error trying to read first TAG_SEQ. idx:%d >= certlen:%ld", idx, certlen);
         return NULL;
     }
 
     if (derdata[idx] != TAG_SEQ) {
-        DBLogWarning(@"DER data does not start with TAG_SEQ. idx:%d octet:%X", idx, derdata[idx]);
+        DBCLogWarning(@"DER data does not start with TAG_SEQ. idx:%d octet:%X", idx, derdata[idx]);
         return NULL;
     }
 
@@ -534,18 +534,18 @@ static const size_t kMaxCertSNLen = 1000;
 
     uint32_t len = 0;
     if ([DBCRequest readLength:&len fromBuffer:derdata ofLength:derlen atIndex:&idx] != 0) {
-        DBLogWarning(@"Failed to parse length from first TAG_SEQ.");
+        DBCLogWarning(@"Failed to parse length from first TAG_SEQ.");
         return NULL;
     }
 
     if (idx >= derlen) {
-        DBLogWarning(@"Error trying to read 2nd TAG_SEQ. idx:%d >= certlen:%ld", idx, certlen);
+        DBCLogWarning(@"Error trying to read 2nd TAG_SEQ. idx:%d >= certlen:%ld", idx, certlen);
         return NULL;
     }
 
     //now we are beyond the length and this is another sequence
     if (derdata[idx] != TAG_SEQ) {
-        DBLogWarning(@"Error: first tag inside the TAG_SEQ is not a TAG_SEQ. idx:%d octet:%X", idx, derdata[idx]);
+        DBCLogWarning(@"Error: first tag inside the TAG_SEQ is not a TAG_SEQ. idx:%d octet:%X", idx, derdata[idx]);
         return NULL;
     }
 
@@ -553,7 +553,7 @@ static const size_t kMaxCertSNLen = 1000;
 
 
     if ([DBCRequest readLength:&len fromBuffer:derdata ofLength:derlen atIndex:&idx] != 0) {
-        DBLogWarning(@"Failed to parse length from second TAG_SEQ");
+        DBCLogWarning(@"Failed to parse length from second TAG_SEQ");
         return NULL;
     }
 
@@ -562,21 +562,21 @@ static const size_t kMaxCertSNLen = 1000;
     //We don't actually care what tag this is, but we need to jump past it.
 
     if (idx >= derlen) {
-        DBLogWarning(@"Reached end of buffer while reading Version from first TLV inside TAG_SEQ. idx:%d >= certlen:%ld", idx, certlen);
+        DBCLogWarning(@"Reached end of buffer while reading Version from first TLV inside TAG_SEQ. idx:%d >= certlen:%ld", idx, certlen);
         return NULL;
     }
 
     //last five bits cant be all 1s, otherwise this is more than 1 byte tag
     //which shouldn't happen for SSL certs
     if ((derdata[idx] & 0x1F) == 0x1F) {
-        DBLogWarning(@"Invalid CERT Version tag inside 2nd SEQ");
+        DBCLogWarning(@"Invalid CERT Version tag inside 2nd SEQ");
         return NULL;
     }
 
     idx++;
 
     if ([DBCRequest readLength:&len fromBuffer:derdata ofLength:derlen atIndex:&idx] != 0) {
-        DBLogWarning(@"Failed to parse length of CERT Version tag");
+        DBCLogWarning(@"Failed to parse length of CERT Version tag");
         return NULL;
     }
 
@@ -586,26 +586,26 @@ static const size_t kMaxCertSNLen = 1000;
 
 
     if (idx >= derlen) {
-        DBLogWarning(@"Reached end of buffer while reading Version from first TLV inside TAG_SEQ. idx:%d >= certlen:%ld", idx, certlen);
+        DBCLogWarning(@"Reached end of buffer while reading Version from first TLV inside TAG_SEQ. idx:%d >= certlen:%ld", idx, certlen);
         return NULL;
     }
 
     //ok now comes the serial number TLV
     if (derdata[idx] != TAG_INT) {
-        DBLogWarning(@"Reached serial number, but it is not marked with TAG_INT. Failing");
+        DBCLogWarning(@"Reached serial number, but it is not marked with TAG_INT. Failing");
         return NULL;
     }
 
     idx++;
 
     if ([DBCRequest readLength:&len fromBuffer:derdata ofLength:derlen atIndex:&idx] != 0) {
-        DBLogWarning(@"Failed to parse length of serial number TLV");
+        DBCLogWarning(@"Failed to parse length of serial number TLV");
         return NULL;
     }
 
 
     if (idx+len >= derlen) {
-        DBLogWarning(@"Serial length goes beyond end of buffer. idx:%d >= certlen:%ld", idx, certlen);
+        DBCLogWarning(@"Serial length goes beyond end of buffer. idx:%d >= certlen:%ld", idx, certlen);
         return NULL;
     }
 
@@ -628,7 +628,7 @@ static const size_t kMaxCertSNLen = 1000;
 
     if (serial == NULL) {
         // Sanity check, should never happen. Fail if we cannot get a serial number
-        DBLogError(@"DropboxSDK: SSL Error. Cannot read a serial number of the certificate");
+        DBCLogError(@"DropboxSDK: SSL Error. Cannot read a serial number of the certificate");
         return true;
     }
     bool isRevoked = false;
@@ -1028,13 +1028,13 @@ static NSMutableArray * volatile sRootCerts = NULL;
                 char derCert[derCertLen];
                 bool success = DBBase64DecodeData(kBase64RootCerts[i], base64CertLen, derCert, &derCertLen);
                 if (!success) {
-                    DBLogError(@"Root certificate base64 decoding failed!");
+                    DBCLogError(@"Root certificate base64 decoding failed!");
                     continue;
                 }
                 CFDataRef rawCert = CFDataCreate(kCFAllocatorDefault, (const UInt8 *)derCert, derCertLen);
                 SecCertificateRef cert = SecCertificateCreateWithData (kCFAllocatorDefault, rawCert);
                 if (cert == NULL) {
-                    DBLogError(@"Invalid root certificate!");
+                    DBCLogError(@"Invalid root certificate!");
                     CFRelease(rawCert);
                     continue;
                 }

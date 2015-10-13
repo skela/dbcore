@@ -55,7 +55,7 @@
 {
     if (!aSession)
     {
-        DBLogError(@"DropboxSDK: cannot initialize a DBCRestClient with a nil session");
+        DBCLogError(@"DropboxSDK: cannot initialize a DBCRestClient with a nil session");
         return nil;
     }
 
@@ -288,7 +288,7 @@
 - (void)parseMetadataFailedForRequest:(DBCRequest *)request
 {
     NSError *error = [NSError errorWithDomain:DBCErrorDomain code:DBCErrorInvalidResponse userInfo:request.userInfo];
-    DBLogWarning(@"DropboxSDK: error parsing metadata");
+    DBCLogWarning(@"DropboxSDK: error parsing metadata");
     if ([delegate respondsToSelector:@selector(restClient:loadMetadataFailedWithError:)])
     {
         [delegate restClient:self loadMetadataFailedWithError:error];
@@ -390,7 +390,7 @@
 - (void)parseDeltaFailedForRequest:(DBCRequest *)request
 {
     NSError *error = [NSError errorWithDomain:DBCErrorDomain code:DBCErrorInvalidResponse userInfo:request.userInfo];
-    DBLogWarning(@"DropboxSDK: error parsing metadata");
+    DBCLogWarning(@"DropboxSDK: error parsing metadata");
     if ([delegate respondsToSelector:@selector(restClient:loadDeltaFailedWithError:)])
     {
         [delegate restClient:self loadDeltaFailedWithError:error];
@@ -606,7 +606,7 @@
         NSError* error = 
             [NSError errorWithDomain:DBCErrorDomain code:errorCode userInfo:userInfo];
         NSString *errorMsg = isDir ? @"Unable to upload folders" : @"File does not exist";
-        DBLogWarning(@"DropboxSDK: %@ (%@)", errorMsg, sourcePath);
+        DBCLogWarning(@"DropboxSDK: %@ (%@)", errorMsg, sourcePath);
         if ([delegate respondsToSelector:@selector(restClient:uploadFileFailedWithError:)]) {
             [delegate restClient:self uploadFileFailedWithError:error];
         }
@@ -722,7 +722,7 @@
 			NSError *error = [NSError errorWithDomain:DBCErrorDomain code:DBCErrorFileNotFound userInfo:userInfo];
 			[delegate restClient:self uploadFileChunkFailedWithError:error];
 		} else {
-			DBLogWarning(@"DropboxSDK: unable to read file in -[DBCRestClient uploadFileChunk:offset:fromPath:] (fromPath=%@)", localPath);
+			DBCLogWarning(@"DropboxSDK: unable to read file in -[DBCRestClient uploadFileChunk:offset:fromPath:] (fromPath=%@)", localPath);
 		}
 		return;
 	}
@@ -730,7 +730,7 @@
 	NSData *data = [file readDataOfLength:2*1024*1024];
 
 	if (![data length]) {
-		DBLogWarning(@"DropboxSDK: did not read any data from file (fromPath=%@)", localPath);
+		DBCLogWarning(@"DropboxSDK: did not read any data from file (fromPath=%@)", localPath);
 	}
 
 	NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "MPOAuthCredentialStore.h"
 #import "MPOAuthParameterFactory.h"
+#import "MPOAuthAPIInternalClient.h"
 
 extern NSString * const MPOAuthNotificationAccessTokenReceived;
 extern NSString * const MPOAuthNotificationAccessTokenRejected;
@@ -35,9 +36,6 @@ typedef enum {
 	MPOAuthAuthenticationStateAuthenticating		= 1,
 	MPOAuthAuthenticationStateAuthenticated			= 2
 } MPOAuthAuthenticationState;
-
-@protocol MPOAuthAPIInternalClient
-@end
 
 @class MPOAuthAuthenticationMethod;
 
