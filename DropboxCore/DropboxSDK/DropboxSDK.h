@@ -8,14 +8,14 @@
  */
 
 /* Import this file to get the most important header files imported */
-#import "DBAccountInfo.h"
-#import "DBSession.h"
-#import "DBRestClient.h"
-#import "DBRequest.h"
-#import "DBMetadata.h"
-#import "DBQuota.h"
-#import "DBError.h"
+#import "DBCAccountInfo.h"
+#import "DBCSession.h"
+#import "DBCRestClient.h"
+#import "DBCRequest.h"
+#import "DBCMetadata.h"
+#import "DBCQuota.h"
+#import "DBCError.h"
 #import "NSString+Dropbox.h"
-#import "DBDeltaEntry.h"
+#import "DBCDeltaEntry.h"
 
 #import "DBSession+iOS.h"
