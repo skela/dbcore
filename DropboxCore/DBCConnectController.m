@@ -298,7 +298,7 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
     id<UIApplicationDelegate> delegate = app.delegate;
 
     if ([delegate respondsToSelector:@selector(application:openURL:sourceApplication:annotation:)]) {
-        [delegate application:app openURL:openUrl sourceApplication:@"com.getdropbox.Dropbox" annotation:nil];
+        [delegate application:app openURL:openUrl sourceApplication:@"com.getdropbox.Dropbox" annotation:@{}];
     } else if ([delegate respondsToSelector:@selector(application:handleOpenURL:)]) {
         [delegate application:app handleOpenURL:openUrl];
     } else {
