@@ -126,6 +126,8 @@
 - (DBCRequest*)createLoadFileRequest:(NSString*)path intoPath:(NSString*)destPath;
 - (DBCRequest*)createLoadFileRequest:(NSString*)path atRev:(NSString*)rev intoPath:(NSString*)destPath;
 
+- (NSMutableURLRequest*)createUpgradeOAuth1Token;
+
 @end
 
 

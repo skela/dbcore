@@ -191,6 +191,13 @@
     return request;
 }
 
+- (NSMutableURLRequest*)createUpgradeOAuth1Token
+{
+    NSMutableURLRequest* req = [self requestWithHost:@"api.dropboxapi.com" path:@"/oauth2/token_from_oauth1" parameters:nil];
+    req.HTTPMethod = @"POST";
+    return req;
+}
+
 #pragma mark - Rest
 
 - (void)loadMetadata:(NSString*)path withParams:(NSDictionary *)params
