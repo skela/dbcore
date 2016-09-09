@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <UIKIt/UIKit.h>
+#import <UIKit/UIKit.h>
 #import "DBCSession.h"
 #import "DBCRequest.h"
 

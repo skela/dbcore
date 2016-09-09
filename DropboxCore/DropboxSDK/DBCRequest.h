@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <UIKIt/UIKit.h>
+#import <UIKit/UIKit.h>
 
 @protocol DBNetworkRequestDelegate;
 
