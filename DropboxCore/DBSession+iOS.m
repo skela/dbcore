@@ -14,7 +14,8 @@
 
 #import "DBCConnectController.h"
 #import "DBLog.h"
-
+#import "NSDictionary+Dropbox.h"
+#import "NSString+Dropbox.h"
 
 static NSString *kDBProtocolDropbox = @"dbapi-2";
 
@@ -27,12 +28,10 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
 + (NSDictionary*)parseURLParams:(NSString *)query {
     NSArray *pairs = [query componentsSeparatedByString:@"&"];
     NSMutableDictionary *params = [[[NSMutableDictionary alloc] init] autorelease];
-    for (NSString *pair in pairs) {
+    for (NSString *pair in pairs)
+    {
         NSArray *kv = [pair componentsSeparatedByString:@"="];
-        NSString *val =
-        [[kv objectAtIndex:1]
-         stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-
+        NSString *val = [[kv objectAtIndex:1] dbStringByReplacingPercentEscapes];
         [params setObject:val forKey:[kv objectAtIndex:0]];
     }
     return params;

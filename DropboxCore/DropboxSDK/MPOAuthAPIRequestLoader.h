@@ -22,6 +22,11 @@ extern NSString * const MPOAuthNotificationErrorHasOccurred;
 @class MPOAuthURLResponse;
 @class MPOAuthCredentialConcreteStore;
 
+@class MPOAuthAPIRequestLoader;
+@protocol MPOAuthRequestLoadFailure<NSObject>
+- (void)loader:(MPOAuthAPIRequestLoader *)inLoader didFailWithError:(NSError *)error;
+@end
+
 @interface MPOAuthAPIRequestLoader : NSObject {
 	MPOAuthCredentialConcreteStore	*_credentials;
 	MPOAuthURLRequest				*_oauthRequest;

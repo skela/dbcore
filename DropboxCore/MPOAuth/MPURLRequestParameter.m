@@ -8,6 +8,7 @@
 
 #import "MPURLRequestParameter.h"
 #import "NSString+URLEscapingAdditions.h"
+#import "NSString+Dropbox.h"
 
 @implementation MPURLRequestParameter
 
@@ -29,7 +30,7 @@
 		
 		currentParameter = [[MPURLRequestParameter alloc] init];
 		currentParameter.name = name;
-		currentParameter.value = [value stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        currentParameter.value = [value dbStringByReplacingPercentEscapes];
 		
 		[foundParameters addObject:currentParameter];
 		
@@ -73,7 +74,7 @@
 			[parameterScanner scanUpToString:@"&" intoString:&value];
 			[parameterScanner scanString:@"&" intoString:NULL];		
 			
-			[foundParameters setObject:[value stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:name];
+			[foundParameters setObject:[value dbStringByReplacingPercentEscapes] forKey:name];
 		}
 		
 		[parameterScanner release];

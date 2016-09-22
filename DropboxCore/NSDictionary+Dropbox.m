@@ -7,25 +7,25 @@
 //
 
 #import "NSDictionary+Dropbox.h"
-
+#import "NSString+Dropbox.h"
 
 @implementation NSDictionary (Dropbox)
 
-+ (NSDictionary *)dictionaryWithQueryString:(NSString *)query {
++ (NSDictionary *)dictionaryWithQueryString:(NSString *)query
+{
     NSArray *pairs = [query componentsSeparatedByString:@"&"];
     NSMutableDictionary *params = [[[NSMutableDictionary alloc] init] autorelease];
-    for (NSString *pair in pairs) {
+    for (NSString *pair in pairs)
+    {
         NSArray *kv = [pair componentsSeparatedByString:@"="];
-        NSString *val =
-            [[kv objectAtIndex:1]
-             stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-
+        NSString *val = [[kv objectAtIndex:1] dbStringByReplacingPercentEscapes];
         [params setObject:val forKey:[kv objectAtIndex:0]];
     }
     return params;
 }
 
-- (NSString *)urlRepresentation {
+- (NSString *)urlRepresentation
+{
     NSMutableString *str = [NSMutableString stringWithString:@""];
     for (id key in self) {
         CFStringRef escapeChars = (CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ";

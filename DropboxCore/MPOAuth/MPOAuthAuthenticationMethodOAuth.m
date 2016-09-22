@@ -134,7 +134,8 @@ NSString * const MPOAuthCredentialVerifierKey				= @"oauth_verifier";
 	}
 }
 
-- (void)loader:(MPOAuthAPIRequestLoader *)inLoader didFailWithError:(NSError *)error {
+- (void)loader:(MPOAuthAPIRequestLoader *)inLoader didFailWithError:(NSError *)error
+{
 	if ([self.delegate respondsToSelector:@selector(authenticationDidFailWithError:)]) {
 		[self.delegate authenticationDidFailWithError: error];
 	}
