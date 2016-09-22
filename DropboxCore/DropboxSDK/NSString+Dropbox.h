@@ -16,4 +16,6 @@
 // Normalizes both paths and compares them
 - (BOOL)isEqualToDropboxPath:(NSString*)otherPath;
 
+- (NSString *)dbStringByReplacingPercentEscapes;
+
 @end

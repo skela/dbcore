@@ -8,7 +8,6 @@
 
 #import "NSString+Dropbox.h"
 
-
 @implementation NSString (Dropbox)
 
 - (NSString*)normalizedDropboxPath {
@@ -18,6 +17,18 @@
 
 - (BOOL)isEqualToDropboxPath:(NSString*)otherPath {
     return [[self normalizedDropboxPath] isEqualToString:[otherPath normalizedDropboxPath]];
+}
+
+- (NSString *)dbStringByReplacingPercentEscapes
+{
+    if ([self respondsToSelector:@selector(stringByRemovingPercentEncoding)])
+    {
+        return [self stringByRemovingPercentEncoding];
+    }
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+    return [self stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    #pragma GCC diagnostic pop
 }
 
 @end
