@@ -11,6 +11,7 @@
 #import "MPOAuthURLResponse.h"
 #import "MPOAuthParameterFactory.h"
 #import "MPOAuthCredentialConcreteStore.h"
+#import "DBCRequest.h"
 
 @interface MPOAuthURLResponse ()
 @property (nonatomic, readwrite, retain) NSURLResponse *urlResponse;
@@ -28,7 +29,7 @@
 	[inRequest addParameters:[inCredentials oauthParameters]];
 	NSURLRequest *urlRequest = [inRequest urlRequestSignedWithSecret:[inCredentials signingKey] usingMethod:[inCredentials signatureMethod]];
 	NSURLResponse *urlResponse = nil;
-	NSData *responseData = [self sendSynchronousRequest:urlRequest returningResponse:&urlResponse error:inError];
+	NSData *responseData = [[NSURLSession sharedSession] sendSynchronousRequestDB:urlRequest returningResponse:&urlResponse error:inError];
 	MPOAuthURLResponse *oauthResponse = [[[MPOAuthURLResponse alloc] init] autorelease];
 	oauthResponse.urlResponse = urlResponse;
 	*outResponse = oauthResponse;

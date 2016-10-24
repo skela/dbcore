@@ -293,15 +293,31 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
     [self.webView loadRequest:self.request];
 }
 
-- (BOOL)openUrl:(NSURL *)openUrl {
+- (BOOL)openUrl:(NSURL *)openUrl
+{
     UIApplication *app = [UIApplication sharedApplication];
     id<UIApplicationDelegate> delegate = app.delegate;
 
-    if ([delegate respondsToSelector:@selector(application:openURL:sourceApplication:annotation:)]) {
+    if ([delegate respondsToSelector:@selector(application:openURL:options:)])
+    {
+        [delegate application:app openURL:openUrl options:@{UIApplicationOpenURLOptionsSourceApplicationKey:@"com.getdropbox.Dropbox"}];
+    }
+    else if ([delegate respondsToSelector:@selector(application:openURL:sourceApplication:annotation:)])
+    {
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         [delegate application:app openURL:openUrl sourceApplication:@"com.getdropbox.Dropbox" annotation:@{}];
-    } else if ([delegate respondsToSelector:@selector(application:handleOpenURL:)]) {
+        #pragma GCC diagnostic pop
+    }
+    else if ([delegate respondsToSelector:@selector(application:handleOpenURL:)])
+    {
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         [delegate application:app handleOpenURL:openUrl];
-    } else {
+        #pragma GCC diagnostic pop
+    }
+    else
+    {
 		DBCLogError(@"DropboxSDK: app delegate does not implement application:openURL:sourceApplication:annotation:");
 		return NO;
 	}

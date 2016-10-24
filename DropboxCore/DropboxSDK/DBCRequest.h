@@ -88,3 +88,9 @@
 - (void)networkRequestStopped;
 
 @end
+
+@interface NSURLSession (DropboxCore)
+
+- (NSData *)sendSynchronousRequestDB:(NSURLRequest *)request returningResponse:(NSURLResponse **)response error:(NSError **)error;
+
+@end
