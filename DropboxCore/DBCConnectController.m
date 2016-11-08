@@ -29,7 +29,6 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
 
 @property (nonatomic, assign) UIViewController *rootController;
 @property (nonatomic, retain) DBCSession *session;
-@property (nonatomic, retain) UIAlertView *alertView;
 @property (nonatomic, assign) BOOL hasLoaded;
 @property (nonatomic, retain) NSURL *url;
 @property (nonatomic, retain) NSURLRequest *request;
@@ -46,15 +45,6 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
 
 
 @implementation DBCConnectController
-
-@synthesize alertView;
-
-- (void)setAlertView:(UIAlertView *)pAlertView {
-    if (pAlertView == alertView) return;
-    alertView.delegate = nil;
-    [alertView release];
-    alertView = [pAlertView retain];
-}
 
 @synthesize rootController;
 @synthesize session;
@@ -98,8 +88,6 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
 
 - (void)dealloc {
 	[session release];
-    alertView.delegate = nil;
-    [alertView release];
     [url release];
     if (webView.isLoading) {
         [webView stopLoading];
@@ -200,26 +188,49 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
         message = NSLocalizedString(@"There was an error loading Dropbox. Please try again.", @"");
     }
 
-    if (self.hasLoaded) {
+    UIAlertController*alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    
+    if (self.hasLoaded)
+    {
         // If it has loaded, it means it's a form submit, so users can cancel/retry on their own
         NSString *okStr = NSLocalizedString(@"OK", nil);
-
-        self.alertView =
-            [[[UIAlertView alloc]
-              initWithTitle:title message:message delegate:nil cancelButtonTitle:okStr otherButtonTitles:nil]
-             autorelease];
-    } else {
+        
+        [alert addAction:[UIAlertAction actionWithTitle:okStr style:UIAlertActionStyleCancel handler:^(UIAlertAction*action){ [self clickedAlertCancel:nil]; }]];
+    }
+    else
+    {
         // if the page hasn't loaded, this alert gives the user a way to retry
         NSString *retryStr = NSLocalizedString(@"Retry", @"Retry loading a page that has failed to load");
-
-        self.alertView =
-            [[[UIAlertView alloc]
-              initWithTitle:title message:message delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", @"")
-              otherButtonTitles:retryStr, nil]
-             autorelease];
+        [alert addAction:[UIAlertAction actionWithTitle:retryStr style:UIAlertActionStyleDefault handler:^(UIAlertAction*action){ [self clickedAlertOK:nil]; }]];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"") style:UIAlertActionStyleCancel handler:^(UIAlertAction*action){ [self clickedAlertCancel:nil]; }]];
     }
+    
+    [self showAlert:alert container:nil];
+}
 
-    [self.alertView show];
+- (void)showAlert:(UIAlertController*)alert container:(id)container
+{
+    if (alert.popoverPresentationController!=nil)
+    {
+        if (container!=nil && [container isKindOfClass:[UIBarButtonItem class]])
+        {
+            alert.popoverPresentationController.barButtonItem = (UIBarButtonItem*)container;
+        }
+        else if (container!=nil && [container isKindOfClass:[UIView class]])
+        {
+            UIView *v = (UIView*)container;
+            alert.popoverPresentationController.sourceView = v;
+            alert.popoverPresentationController.sourceRect = v.bounds;
+        }
+        else
+        {
+            alert.popoverPresentationController.permittedArrowDirections = 0;
+            alert.popoverPresentationController.sourceView = self.view;
+            alert.popoverPresentationController.sourceRect = self.view.frame;
+        }
+    }
+    
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (BOOL)webView:(UIWebView *)aWebView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
@@ -266,20 +277,22 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
 
 #pragma mark UIAlertView methods
 
-- (void)alertView:(UIAlertView *)pAlertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex != pAlertView.cancelButtonIndex) {
-        [self loadRequest];
-    } else {
-        if ([self.navigationController.viewControllers count] > 1) {
-            [self.navigationController popViewControllerAnimated:YES];
-        } else {
-            [self cancel];
-        }
+- (void)clickedAlertCancel:(id)sender
+{
+    if ([self.navigationController.viewControllers count] > 1)
+    {
+        [self.navigationController popViewControllerAnimated:YES];
     }
-
-    self.alertView = nil;
+    else
+    {
+        [self cancel];
+    }
 }
 
+- (void)clickedAlertOK:(id)sender
+{
+    [self loadRequest];
+}
 
 #pragma mark private methods
 

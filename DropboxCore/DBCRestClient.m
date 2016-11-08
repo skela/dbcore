@@ -1328,15 +1328,9 @@
 
 #pragma mark private methods
 
-+ (NSString*)escapePath:(NSString*)path {
-    CFStringEncoding encoding = CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding);
-    NSString *escapedPath = 
-        (NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
-                                                            (CFStringRef)path,
-                                                            NULL,
-                                                            (CFStringRef)@":?=,!$&'()*+;[]@#~",
-                                                            encoding);
-    
++ (NSString*)escapePath:(NSString*)path
+{
+    NSString *escapedPath = [path stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]];
     return [escapedPath autorelease];
 }
 
